@@ -6,150 +6,139 @@
 
 ## ¿Qué es un StatefulWidget?
 
-Un `StatefulWidget` es un widget **con estado**, lo que significa que puede **cambiar y actualizarse** mientras la app está en uso. Es ideal para:
-
-- Contadores
-- Formularios
-- Toggles (activar/desactivar)
-- Listas que se modifican
-- Cualquier cosa que reaccione a acciones del usuario
+Un `StatefulWidget` es un widget **con estado**, lo que significa que puede **cambiar y actualizarse** mientras la app está en uso.
 
 > 📌 La diferencia clave con `StatelessWidget`: aquí la pantalla **se puede redibujar** cuando los datos cambian.
 
 ---
 
-## Estructura básica
+## Lo que hicimos en clase
 
-Un `StatefulWidget` siempre se compone de **dos clases**:
+Al final del `main.dart` creamos `MiWidgetStateful` y lo usamos junto a `MiWidget`:
 
 ```dart
-import 'package:flutter/material.dart';
+body: Center(
+  child: Column(
+    children: [
+      MiWidget(),           // StatelessWidget — no cambia
+      MiWidgetStateful(),   // StatefulWidget — sí cambia
+      // ...
+    ],
+  ),
+),
+```
 
-// Clase 1: el widget
-class MiWidget extends StatefulWidget {
+---
+
+## Estructura básica — siempre son dos clases
+
+Un `StatefulWidget` **siempre se compone de dos clases**. Así lo escribimos en clase:
+
+```dart
+// Clase 1: el widget en sí
+class MiWidgetStateful extends StatefulWidget {
   @override
-  State<MiWidget> createState() => _MiWidgetState();
+  State<MiWidgetStateful> createState() => _MiWidgetStatefulState();
 }
 
-// Clase 2: el estado del widget
-class _MiWidgetState extends State<MiWidget> {
+// Clase 2: el estado del widget (donde viven los datos y la lógica)
+class _MiWidgetStatefulState extends State<MiWidgetStateful> {
+  String mensaje = 'Soy un StatefulWidget';
+
   @override
   Widget build(BuildContext context) {
-    return Text('Hola, soy un StatefulWidget');
+    return Column(
+      children: [
+        Text(mensaje),
+
+        ElevatedButton(
+          onPressed: () {
+            setState(() {
+              mensaje = 'Texto actualizado';
+            });
+          },
+          child: Text('Cambiar texto'),
+        ),
+      ],
+    );
   }
 }
 ```
 
-### Partes importantes:
+### ¿Qué hace cada parte?
 
 | Parte | Descripción |
 |---|---|
-| `StatefulWidget` | El widget en sí (no cambia) |
-| `createState()` | Crea el estado asociado |
-| `State<MiWidget>` | Aquí viven los datos que cambian |
-| `setState()` | Método que actualiza la UI cuando un dato cambia |
+| `StatefulWidget` | El widget en sí. No contiene lógica, solo crea el estado |
+| `createState()` | Conecta el widget con su clase de estado |
+| `State<MiWidgetStateful>` | Aquí viven los datos y el método `build()` |
+| `String mensaje` | Variable de estado — cuando cambia, la pantalla se redibuja |
+| `setState()` | Le avisa a Flutter que algo cambió y que tiene que redibujar |
 
 ---
 
 ## El método setState()
 
-`setState()` es el método más importante. Le dice a Flutter que **algo cambió** y que debe **redibujar el widget**.
+`setState()` es el método más importante. Le dice a Flutter que **algo cambió** y debe **redibujar el widget**.
 
 ```dart
-// ❌ Sin setState — la pantalla NO se actualiza
-_contador = _contador + 1;
+// ❌ Sin setState — la pantalla NO se actualiza aunque el dato cambie
+mensaje = 'Texto actualizado';
 
 // ✅ Con setState — la pantalla SÍ se actualiza
 setState(() {
-  _contador = _contador + 1;
+  mensaje = 'Texto actualizado';
 });
 ```
 
+> 📌 En nuestro ejemplo: cuando el usuario presiona el botón, `setState` cambia el valor de `mensaje` y Flutter actualiza el `Text` en pantalla automáticamente.
+
 ---
 
-## Ejemplo completo — Contador
+## Paso a paso: cómo funciona nuestro ejemplo
 
-El ejemplo clásico de Flutter:
+**1.** El widget inicia con `mensaje = 'Soy un StatefulWidget'`
+
+**2.** Flutter muestra ese texto en pantalla con `Text(mensaje)`
+
+**3.** El usuario presiona `ElevatedButton`
+
+**4.** Se ejecuta el `onPressed`:
+```dart
+onPressed: () {
+  setState(() {
+    mensaje = 'Texto actualizado';
+  });
+},
+```
+
+**5.** Flutter detecta el `setState`, ejecuta `build()` de nuevo y muestra el nuevo texto
+
+---
+
+## Ejemplo clásico — el contador original de Flutter
+
+Este es el contador que venía en el proyecto por defecto (lo comentamos en clase para reemplazarlo):
 
 ```dart
-import 'package:flutter/material.dart';
+class _MyHomePageState extends State<MyHomePage> {
+  int _counter = 0;  // variable de estado
 
-class PantallaContador extends StatefulWidget {
-  @override
-  State<PantallaContador> createState() => _PantallaContadorState();
-}
-
-class _PantallaContadorState extends State<PantallaContador> {
-  // Variable que guarda el estado
-  int _contador = 0;
-
-  void _incrementar() {
+  void _incrementCounter() {
     setState(() {
-      _contador++; // actualiza el valor y redibuja
+      _counter++;  // cambia el estado → Flutter redibuja
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Contador')),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Has presionado el botón:'),
-            Text(
-              '$_contador',
-              style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
+        child: Text('$_counter'),  // muestra el valor actual
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementar,
+        onPressed: _incrementCounter,
         child: Icon(Icons.add),
-      ),
-    );
-  }
-}
-```
-
----
-
-## Ejemplo 2 — Toggle (activar/desactivar)
-
-```dart
-class PantallaToggle extends StatefulWidget {
-  @override
-  State<PantallaToggle> createState() => _PantallaToggleState();
-}
-
-class _PantallaToggleState extends State<PantallaToggle> {
-  bool _activado = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Toggle')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              _activado ? '✅ Activado' : '❌ Desactivado',
-              style: TextStyle(fontSize: 24),
-            ),
-            SizedBox(height: 24),
-            Switch(
-              value: _activado,
-              onChanged: (valor) {
-                setState(() {
-                  _activado = valor;
-                });
-              },
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -165,24 +154,25 @@ class _PantallaToggleState extends State<PantallaToggle> {
 | ¿Cambia la UI? | ❌ No | ✅ Sí |
 | ¿Tiene setState? | ❌ No | ✅ Sí |
 | ¿Cuántas clases? | 1 | 2 |
-| Uso típico | Pantallas estáticas | Formularios, contadores, listas |
+| Ejemplo en clase | `MiWidget` | `MiWidgetStateful` |
+| Uso típico | Texto fijo, íconos | Formularios, contadores, listas |
 
 ---
 
 ## Ciclo de vida básico
 
 ```
-createState()         → se crea el estado
-    │
-initState()           → se ejecuta una vez al iniciar (opcional)
-    │
-build()               → construye la UI
-    │
-setState() llamado    → redibuja la UI
-    │
-dispose()             → se limpia cuando el widget desaparece (opcional)
+createState()      → se crea el estado (una sola vez)
+       │
+   build()         → construye la UI y la muestra en pantalla
+       │
+setState() llamado → algo cambió → Flutter llama build() de nuevo
+       │
+   build()         → la UI se actualiza con los nuevos datos
+       │
+  dispose()        → limpieza cuando el widget desaparece (opcional)
 ```
 
 ---
 
-> 💡 **Tip:** Las variables que van dentro de `setState()` deben declararse en la clase `_MiWidgetState`, no dentro del `build()`. De lo contrario se resetean cada vez que la UI se redibuja.
+> 💡 **Tip:** Las variables que cambian con `setState()` deben declararse en la clase `_MiWidgetStatefulState`, **no dentro** del `build()`. Si las declaras dentro del `build()`, se resetean cada vez que Flutter redibuja la pantalla.
