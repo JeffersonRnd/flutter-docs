@@ -48,7 +48,10 @@ Text(
 El widget `TextField` permite al usuario escribir texto.
 
 ### Ejemplo básico
-
+```dart
+TextField()
+```
+### Con estilo
 ```dart
 TextField(
   decoration: InputDecoration(
@@ -58,7 +61,6 @@ TextField(
   ),
 )
 ```
-
 ### Capturar lo que escribe el usuario
 
 Para leer el valor del `TextField` se usa un `TextEditingController`:
