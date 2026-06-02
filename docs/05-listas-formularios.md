@@ -12,7 +12,17 @@ Una lista muestra múltiples elementos de forma ordenada y desplazable. En Flutt
 
 ---
 
-### ListView básico
+### ListView básico — el que usamos en clase
+
+En nuestro `main.dart` vimos este ejemplo con elementos fijos:
+
+```dart
+ListTile(title: Text('Elemento 1')),
+ListTile(title: Text('Elemento 2')),
+ListTile(title: Text('Elemento 3')),
+```
+
+Pero para que sean desplazables, se envuelven en un `ListView`:
 
 ```dart
 ListView(
@@ -28,227 +38,183 @@ ListView(
 
 ### ListView.builder — para listas dinámicas
 
-Cuando tienes muchos elementos o una lista que viene de datos reales, usa `ListView.builder`. Es más eficiente porque solo construye los elementos visibles.
+Cuando los elementos vienen de una variable (como en nuestro formulario), usamos `ListView.builder`. Es más eficiente porque solo construye los elementos visibles en pantalla.
+
+Este es exactamente el código que usamos en clase:
 
 ```dart
-import 'package:flutter/material.dart';
+// Tenemos una lista de nombres (variable de estado)
+List<String> nombres = [];
 
-class PantallaLista extends StatelessWidget {
-  final List<String> frutas = [
-    'Manzana', 'Banana', 'Naranja', 'Mango', 'Uva',
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Mi Lista')),
-      body: ListView.builder(
-        itemCount: frutas.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            leading: Icon(Icons.circle),
-            title: Text(frutas[index]),
-            subtitle: Text('Índice: $index'),
-          );
-        },
-      ),
-    );
-  }
-}
+// ListView.builder la muestra en pantalla
+Expanded(
+  child: ListView.builder(
+    itemCount: nombres.length,    // ¿cuántos elementos tiene la lista?
+    itemBuilder: (context, index) {
+      return ListTile(
+        title: Text(nombres[index]),  // muestra el elemento en esa posición
+      );
+    },
+  ),
+),
 ```
+
+> 📌 `Expanded` es necesario porque `ListView` necesita saber cuánto espacio puede ocupar. `Expanded` le dice "ocupa todo el espacio disponible".
 
 | Propiedad | Descripción |
 |---|---|
-| `itemCount` | Número total de elementos |
+| `itemCount` | Cantidad total de elementos en la lista |
 | `itemBuilder` | Función que construye cada elemento |
-| `index` | Posición actual del elemento (0, 1, 2...) |
+| `index` | Posición del elemento actual (0, 1, 2...) |
+| `nombres[index]` | Obtiene el elemento en esa posición |
 
 ---
 
-### Lista con objetos
+## Parte 2: Formulario básico
+
+### ¿Qué hicimos en clase?
+
+Creamos un formulario simple que permite al usuario escribir un nombre y guardarlo en una lista que se muestra en pantalla en tiempo real.
+
+---
+
+### El código completo — paso a paso
+
+#### Paso 1: Declarar el controlador y la lista (como variables de estado)
 
 ```dart
-class Producto {
-  final String nombre;
-  final double precio;
-  Producto({required this.nombre, required this.precio});
-}
+class _MyHomePageState extends State<MyHomePage> {
 
-class ListaProductos extends StatelessWidget {
-  final List<Producto> productos = [
-    Producto(nombre: 'Laptop', precio: 1500.00),
-    Producto(nombre: 'Mouse', precio: 25.00),
-    Producto(nombre: 'Teclado', precio: 45.00),
-  ];
+  // Controlador para leer lo que el usuario ingresa
+  final TextEditingController _controller = TextEditingController();
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Productos')),
-      body: ListView.builder(
-        itemCount: productos.length,
-        itemBuilder: (context, index) {
-          final producto = productos[index];
-          return Card(
-            margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: ListTile(
-              title: Text(producto.nombre),
-              trailing: Text(
-                'S/ ${producto.precio.toStringAsFixed(2)}',
-                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
+  // Lista donde guardamos los nombres ingresados
+  List<String> nombres = [];
 ```
 
----
-
-## Parte 2: Formularios
-
-### ¿Qué es un Form en Flutter?
-
-El widget `Form` agrupa campos de texto (`TextFormField`) y permite **validarlos todos a la vez** antes de procesar los datos.
-
-> 📌 La diferencia entre `TextField` y `TextFormField` es que el segundo funciona dentro de un `Form` y permite agregar validaciones.
+> 📌 `TextEditingController` es el "puente" entre el `TextField` y nuestro código. Sin él no podemos leer lo que el usuario escribió.
 
 ---
 
-### Estructura básica de un Form
+#### Paso 2: Construir el formulario en el body
 
 ```dart
-final _formKey = GlobalKey<FormState>();
-
-Form(
-  key: _formKey,
+body: Padding(
+  padding: EdgeInsets.all(16),  // espacio alrededor del contenido
   child: Column(
     children: [
-      TextFormField(
-        decoration: InputDecoration(labelText: 'Nombre'),
-        validator: (valor) {
-          if (valor == null || valor.isEmpty) {
-            return 'Este campo es obligatorio';
-          }
-          return null; // null = válido
-        },
-      ),
-      ElevatedButton(
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            print('Formulario válido');
-          }
-        },
-        child: Text('Enviar'),
-      ),
-    ],
-  ),
-)
+```
+
+> 📌 `Padding` agrega espacio interno. `EdgeInsets.all(16)` significa 16 píxeles en todos los lados.
+
+---
+
+#### Paso 3: El título
+
+```dart
+      Text('Formulario'),
 ```
 
 ---
 
-### Formulario completo con validaciones
+#### Paso 4: El campo de texto conectado al controlador
 
 ```dart
-import 'package:flutter/material.dart';
+      TextField(
+        controller: _controller,       // conecta el campo con el controlador
+        decoration: InputDecoration(
+          labelText: 'Nombre',
+          border: OutlineInputBorder(), // borde visible
+        ),
+      ),
+```
 
-class FormularioRegistro extends StatefulWidget {
-  @override
-  State<FormularioRegistro> createState() => _FormularioRegistroState();
-}
+---
 
-class _FormularioRegistroState extends State<FormularioRegistro> {
-  final _formKey = GlobalKey<FormState>();
-  final _nombreController = TextEditingController();
-  final _correoController = TextEditingController();
-  final _passwordController = TextEditingController();
+#### Paso 5: El botón que guarda el nombre en la lista
 
-  void _enviar() {
-    if (_formKey.currentState!.validate()) {
-      print('Nombre: ${_nombreController.text}');
-      print('Correo: ${_correoController.text}');
-    }
-  }
+```dart
+      ElevatedButton(
+        onPressed: () {
+          setState(() {
+            nombres.add(_controller.text);  // agrega el texto a la lista
+          });
+        },
+        child: Text('Guardar'),
+      ),
+```
+
+> 📌 `nombres.add(...)` agrega un elemento al final de la lista. Envuelto en `setState()` para que Flutter actualice la pantalla.
+
+---
+
+#### Paso 6: La lista que muestra los nombres guardados
+
+```dart
+      Expanded(
+        child: ListView.builder(
+          itemCount: nombres.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              title: Text(nombres[index]),
+            );
+          },
+        ),
+      ),
+```
+
+---
+
+### El código completo junto
+
+```dart
+class _MyHomePageState extends State<MyHomePage> {
+
+  final TextEditingController _controller = TextEditingController();
+  List<String> nombres = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Registro')),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(widget.title),
+      ),
+
       body: Padding(
         padding: EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _nombreController,
-                decoration: InputDecoration(
-                  labelText: 'Nombre completo',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.person),
-                ),
-                validator: (valor) {
-                  if (valor == null || valor.isEmpty) {
-                    return 'Por favor ingresa tu nombre';
-                  }
-                  return null;
+        child: Column(
+          children: [
+            Text('Formulario'),
+
+            TextField(
+              controller: _controller,
+              decoration: InputDecoration(
+                labelText: 'Nombre',
+                border: OutlineInputBorder(),
+              ),
+            ),
+
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  nombres.add(_controller.text);
+                });
+              },
+              child: Text('Guardar'),
+            ),
+
+            Expanded(
+              child: ListView.builder(
+                itemCount: nombres.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(nombres[index]),
+                  );
                 },
               ),
-              SizedBox(height: 16),
-              TextFormField(
-                controller: _correoController,
-                decoration: InputDecoration(
-                  labelText: 'Correo electrónico',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.email),
-                ),
-                keyboardType: TextInputType.emailAddress,
-                validator: (valor) {
-                  if (valor == null || valor.isEmpty) {
-                    return 'Por favor ingresa tu correo';
-                  }
-                  if (!valor.contains('@')) {
-                    return 'Ingresa un correo válido';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 16),
-              TextFormField(
-                controller: _passwordController,
-                decoration: InputDecoration(
-                  labelText: 'Contraseña',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.lock),
-                ),
-                obscureText: true,
-                validator: (valor) {
-                  if (valor == null || valor.isEmpty) {
-                    return 'Por favor ingresa una contraseña';
-                  }
-                  if (valor.length < 6) {
-                    return 'Mínimo 6 caracteres';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _enviar,
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  child: Text('Registrarse', style: TextStyle(fontSize: 16)),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -258,73 +224,24 @@ class _FormularioRegistroState extends State<FormularioRegistro> {
 
 ---
 
-## Lista + Formulario combinados
+### ¿Cómo funciona todo junto?
 
-Un formulario que agrega elementos a una lista en tiempo real:
+**1.** El usuario escribe un nombre en el `TextField`
 
+**2.** Presiona el botón **Guardar**
+
+**3.** Se ejecuta:
 ```dart
-class ListaConFormulario extends StatefulWidget {
-  @override
-  State<ListaConFormulario> createState() => _ListaConFormularioState();
-}
-
-class _ListaConFormularioState extends State<ListaConFormulario> {
-  final _controller = TextEditingController();
-  final List<String> _elementos = [];
-
-  void _agregar() {
-    if (_controller.text.isNotEmpty) {
-      setState(() {
-        _elementos.add(_controller.text);
-        _controller.clear();
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Mi Lista')),
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    decoration: InputDecoration(
-                      labelText: 'Nuevo elemento',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: _agregar,
-                  child: Icon(Icons.add),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _elementos.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: Icon(Icons.check_circle_outline),
-                  title: Text(_elementos[index]),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+setState(() {
+  nombres.add(_controller.text);  // guarda "Juan" en la lista
+});
 ```
+
+**4.** Flutter detecta el `setState` y redibuja la pantalla
+
+**5.** El `ListView.builder` ahora tiene un elemento más y lo muestra
+
+**6.** El usuario puede seguir agregando nombres y la lista crece
 
 ---
 
@@ -333,15 +250,16 @@ class _ListaConFormularioState extends State<ListaConFormulario> {
 | Widget | Para qué sirve |
 |---|---|
 | `ListView` | Lista de elementos fijos |
-| `ListView.builder` | Lista dinámica o con muchos elementos |
-| `ListTile` | Elemento estándar de lista |
-| `Form` | Agrupa y valida campos de texto |
-| `TextFormField` | Campo de texto con validación |
-| `GlobalKey<FormState>` | Controla y valida el formulario |
+| `ListView.builder` | Lista dinámica que viene de una variable |
+| `ListTile` | Elemento estándar de lista con texto |
+| `Expanded` | Hace que el ListView ocupe el espacio disponible |
+| `TextEditingController` | Lee lo que el usuario escribió en el `TextField` |
+| `nombres.add(...)` | Agrega un elemento al final de la lista |
+| `setState()` | Avisa a Flutter que la lista cambió para redibujar |
 
 ---
 
-> 💡 **Tip:** Siempre libera los controladores cuando el widget desaparezca:
+> 💡 **Tip:** Siempre libera el controlador cuando el widget desaparezca, para no desperdiciar memoria:
 
 ```dart
 @override
