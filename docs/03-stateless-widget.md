@@ -6,15 +6,41 @@
 
 ## ¿Qué es un StatelessWidget?
 
-Un `StatelessWidget` es un widget **sin estado**, lo que significa que una vez que se construye, su contenido **no cambia**. Es perfecto para mostrar información estática como:
+Un `StatelessWidget` es un widget **sin estado**, lo que significa que una vez que se construye, su contenido **no cambia**. Es perfecto para mostrar información estática.
 
-- Textos fijos
-- Íconos
-- Imágenes
-- Pantallas de bienvenida
-- Tarjetas con información que no varía
+> 📌 La palabra "state" significa "estado". Sin estado = sin cambios en pantalla.
 
-> 📌 La palabra "state" significa "estado". Sin estado = sin cambios.
+---
+
+## Lo que hicimos en clase
+
+Al final del archivo `main.dart` creamos nuestro primer widget personalizado:
+
+```dart
+// Acá creamos el widget
+class MiWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Text('Bienvenidos a mi primera app');
+  }
+}
+```
+
+Y lo llamamos desde el `body` del `Scaffold`:
+
+```dart
+body: Center(
+  child: Column(
+    children: [
+      // Llamamos al widget acá
+      MiWidget(),
+      // ...otros widgets
+    ],
+  ),
+),
+```
+
+> 📌 Fíjate: `MiWidget()` se usa igual que cualquier otro widget de Flutter como `Text()` o `ElevatedButton()`.
 
 ---
 
@@ -31,55 +57,75 @@ class MiWidget extends StatelessWidget {
 }
 ```
 
-### Partes importantes:
+### Partes importantes
 
 | Parte | Descripción |
 |---|---|
-| `class MiWidget` | Nombre de tu widget (siempre en PascalCase) |
+| `class MiWidget` | Nombre del widget (siempre en PascalCase: primera letra mayúscula) |
 | `extends StatelessWidget` | Indica que es un widget sin estado |
-| `build()` | Método que construye y devuelve la UI |
-| `BuildContext context` | Información sobre la posición del widget en el árbol |
+| `build()` | Método obligatorio que construye y devuelve la UI |
+| `BuildContext context` | Información sobre dónde está el widget dentro de la app |
 
 ---
 
-## Ejemplo completo
+## ¿Por qué crear nuestros propios widgets?
 
-Una pantalla de bienvenida hecha con `StatelessWidget`:
+En lugar de escribir todo el código en un solo lugar, podemos **separarlo en partes** más pequeñas y reutilizables.
+
+**Sin widget propio** — todo junto en el `build`:
 
 ```dart
-import 'package:flutter/material.dart';
+Column(
+  children: [
+    Text('Bienvenidos a mi primera app'),
+    // ...100 líneas más de código
+  ],
+)
+```
 
+**Con widget propio** — separado y limpio:
+
+```dart
+Column(
+  children: [
+    MiWidget(),  // ✅ limpio y reutilizable
+    // ...
+  ],
+)
+```
+
+---
+
+## Ejemplo completo — lo que está en nuestro main.dart
+
+Este es exactamente el widget que creamos en clase:
+
+```dart
+class MiWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Text('Bienvenidos a mi primera app');
+  }
+}
+```
+
+Si quisiéramos hacerlo más completo (con `Scaffold`, `AppBar`, etc.) sería así:
+
+```dart
 class PantallaBienvenida extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Bienvenida'),
-      ),
+      appBar: AppBar(title: Text('Bienvenida')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.flutter_dash,
-              size: 80,
-              color: Colors.blue,
-            ),
+            Icon(Icons.flutter_dash, size: 80, color: Colors.blue),
             SizedBox(height: 16),
             Text(
               '¡Bienvenido a Flutter!',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Empieza a construir tu app',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-              ),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -93,7 +139,7 @@ class PantallaBienvenida extends StatelessWidget {
 
 ## StatelessWidget con parámetros
 
-Puedes pasarle datos a un `StatelessWidget` mediante el constructor:
+También podemos pasarle datos a nuestro widget mediante el constructor:
 
 ```dart
 class TarjetaUsuario extends StatelessWidget {
@@ -113,13 +159,8 @@ class TarjetaUsuario extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              nombre,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 4),
+            Text(nombre, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             Text(correo),
           ],
         ),
@@ -129,10 +170,9 @@ class TarjetaUsuario extends StatelessWidget {
 }
 ```
 
-### ¿Cómo usarlo?
+Y se usa así:
 
 ```dart
-// Pasar los datos al widget
 TarjetaUsuario(
   nombre: 'Juan Pérez',
   correo: 'juan@correo.com',
@@ -150,18 +190,18 @@ TarjetaUsuario(
 
 ❌ No lo uses cuando:
 - El usuario interactúa y la pantalla debe **actualizarse**
-- Necesitas un contador, formulario, o cualquier dato que cambie
+- Necesitas un contador, formulario, o cualquier dato que cambie → usa `StatefulWidget`
 
 ---
 
-## Resumen
+## Resumen visual
 
 ```
 StatelessWidget
     │
     └── build()
             │
-            └── Devuelve la UI (widgets)
+            └── Devuelve la UI (un widget)
                 No cambia una vez construido
 ```
 
