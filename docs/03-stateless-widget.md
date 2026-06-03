@@ -45,12 +45,15 @@ body: Center(
 ---
 ### Partes importantes
 
-| Parte | Descripción |
+| Parte | Significado |
 |---|---|
-| `class MiWidget` | Nombre del widget (siempre en PascalCase: primera letra mayúscula) |
-| `extends StatelessWidget` | Indica que es un widget sin estado |
-| `build()` | Método obligatorio que construye y devuelve la UI |
+| `class` | Palabra reservada de Dart para crear una clase |
+| `StatelessWidgetejemplo` | El nombre que nosotros le damos al widget |
+| `extends StatelessWidget` | Le dice a Flutter que esta clase es un widget sin estado |
+| `@override` | Indica que vamos a reescribir el método `build` que ya existe en Flutter |
+| `Widget build` | Método obligatorio que construye lo que se ve en pantalla |
 | `BuildContext context` | Información sobre dónde está el widget dentro de la app |
+| `return` | Lo que devuelve el widget, o sea lo que se muestra en pantalla |
 
 ---
 
