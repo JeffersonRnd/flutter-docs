@@ -11,177 +11,226 @@ Un widget es un componente visual. Puede ser un texto, un botón, un campo de te
 
 ---
 
-## Lo que veremos
+## Paso 1 — Eliminamos lo que venía por defecto
+
+El proyecto de Flutter trae por defecto un contador con un botón flotante. Lo primero que hacemos es **comentar todo eso** para empezar desde cero. Comentamos el método del contador, el `floatingActionButton` y todo el body original:
+
+```dart
+/*int _counter = 0;
+
+void _incrementCounter() {
+  setState(() {
+    _counter++;
+  });
+}*/
+```
+
+```dart
+/*floatingActionButton: FloatingActionButton(
+  onPressed: _incrementCounter,
+  child: Icon(Icons.add),
+),*/
+```
+
+> 📌 Comentar es mejor que borrar mientras aprendemos. Si algo sale mal podemos descomentar y volver atrás.
+
+---
+
+## Paso 2 — Primer body: un solo widget a la vez
+
+Comentamos el body original y creamos uno nuevo. La idea es ir probando cada widget **de uno en uno**, comentando y descomentando para ver cómo se ve cada uno:
+
+```dart
+body: Center(
+  //child: Text("HOLA MUNDO"),
+  //child: TextField(),
+  child: ElevatedButton(
+    onPressed: () {},
+    child: Text("iniciar sesión"),
+  ),
+),
+```
+
+> 📌 `Center` solo puede tener un `child`, entonces descomentamos uno y comentamos los demás para ver cada widget por separado.
+
+---
+
+## Paso 3 — Segundo body: varios widgets juntos
+
+Comentamos el body anterior y creamos uno nuevo. Ahora usamos `Column` para mostrar **varios widgets al mismo tiempo**, primero en su versión básica sin estilos:
 
 ```dart
 body: Center(
   child: Column(
     children: [
-      // Widget Text — muestra texto
-      Text('HOLA MUNDO'),
-
-      // Widget TextField — campo de texto
+      Text("APLICACIONES MOVILES"),
       TextField(),
-
-      // Widget ElevatedButton — botón con acción
       ElevatedButton(
         onPressed: () {},
-        child: Text('Enviar'),
+        child: Text("iniciar sesión"),
       ),
+      ListTile(title: Text("- ADMINISTRADOR")),
+      ListTile(title: Text("- CONTADOR")),
+      ListTile(title: Text("- SECRETARIO")),
     ],
   ),
 ),
 ```
 
-Vamos a ver cada uno en detalle.
+---
+
+## Paso 4 — Agregamos estilos a cada widget
+
+Ya que vemos cómo se ven sin estilos, ahora los personalizamos uno por uno.
 
 ---
 
-## 1. Widget Text
-
-El widget `Text` muestra un texto en pantalla.
-
-### Ejemplo básico — el que usamos en clase
+### Widget Text con estilo
 
 ```dart
-Text('HOLA MUNDO')
-```
+// Sin estilo
+Text("APLICACIONES MOVILES")
 
-### Con estilos — también en nuestro código
-
-```dart
+// Con estilo
 Text(
-  'Hola Mundo',
-  style: TextStyle(fontSize: 24, color: Colors.blue),
-),
+  "APLICACIONES MOVILES",
+  style: TextStyle(fontSize: 30, color: Colors.red),
+)
 ```
-
-> 📌 `TextStyle` permite personalizar el texto: tamaño, color, negrita, etc.
 
 | Propiedad | Descripción |
 |---|---|
-| `fontSize` | Tamaño de la fuente (número) |
+| `fontSize` | Tamaño de la fuente |
 | `fontWeight` | Grosor: `FontWeight.bold` para negrita |
-| `color` | Color: `Colors.blue`, `Colors.red`, etc. |
+| `color` | Color del texto |
 
 ---
 
-## 2. Widget TextField (Input)
-
-El widget `TextField` permite al usuario escribir texto.
-
-### Ejemplo básico
+### Widget TextField con estilo
 
 ```dart
+// Sin estilo — se va de extremo a extremo
 TextField()
-```
 
-### Con estilos — el que usamos en clase
-
-```dart
+// Con decoración — etiqueta, sugerencia y borde
 TextField(
   decoration: InputDecoration(
-    labelText: 'Escribe tu nombre',
-    hintText: 'ESCRIBE ACÁ',
+    labelText: 'escriba su correo',
+    hintText: 'usuario@gmail.com',
     border: OutlineInputBorder(),
   ),
-),
+)
 ```
-### PARA REDUCIR LOS BORDES
+
+El problema es que el `TextField` ocupa todo el ancho de la pantalla. Para reducirlo lo envolvemos en un `SizedBox` y le damos un ancho:
 
 ```dart
+// Con ancho reducido
 SizedBox(
   width: 300,
   child: TextField(
     decoration: InputDecoration(
-      labelText: 'Escribe tu nombre',
-      hintText: 'ESCRIBE ACÁ',
+      labelText: 'escriba su correo',
+      hintText: 'usuario@gmail.com',
       border: OutlineInputBorder(),
     ),
   ),
-),
-```
-
-### Capturar lo que escribe el usuario — TextEditingController
-
-Para leer el valor del `TextField` se usa un `TextEditingController`. En nuestro código lo declaramos así:
-
-```dart
-// Paso 1: declarar el controlador (fuera del build)
-final TextEditingController _controller = TextEditingController();
-```
-
-Luego lo conectamos al `TextField`:
-
-```dart
-// Paso 2: asignarlo al TextField
-TextField(
-  controller: _controller,
-  decoration: InputDecoration(
-    labelText: 'Nombre',
-    border: OutlineInputBorder(),
-  ),
-),
-```
-
-Y cuando el usuario presiona el botón, leemos el valor:
-
-```dart
-// Paso 3: leer el texto ingresado
-print(_controller.text);
+)
 ```
 
 | Propiedad | Descripción |
 |---|---|
-| `controller` | Conecta el campo con el controlador para leer su valor |
 | `labelText` | Etiqueta que aparece sobre el campo |
 | `hintText` | Texto de sugerencia dentro del campo |
-| `border: OutlineInputBorder()` | Agrega un borde visible alrededor del campo |
-| `obscureText: true` | Oculta el texto (para contraseñas) |
+| `border: OutlineInputBorder()` | Borde visible alrededor del campo |
+| `SizedBox width` | Reduce el ancho del campo |
 
 ---
 
-## 3. Widget ElevatedButton (Botón)
-
-El widget `ElevatedButton` es el botón principal de Flutter.
-
-### Ejemplo básico — el que usamos en clase
+### Widget ElevatedButton con estilo
 
 ```dart
+// Sin estilo
 ElevatedButton(
   onPressed: () {},
-  child: Text('Enviar'),
+  child: Text("iniciar sesión"),
+)
+
+// Con color de fondo y estilo de texto
+ElevatedButton(
+  style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+  onPressed: () {},
+  child: Text(
+    "iniciar sesión",
+    style: TextStyle(fontSize: 10, color: Colors.black87),
+  ),
+)
+```
+
+| Propiedad | Descripción |
+|---|---|
+| `backgroundColor` | Color de fondo del botón |
+| `onPressed: () {}` | Función vacía, el botón no hace nada todavía |
+| `TextStyle` dentro del `child` | Estilo del texto del botón |
+
+---
+
+### Widget ListTile
+
+```dart
+ListTile(title: Text("- ADMINISTRADOR")),
+ListTile(title: Text("- CONTADOR")),
+ListTile(title: Text("- SECRETARIO")),
+```
+
+> 📌 `ListTile` es el widget estándar para mostrar elementos en una lista. Lo veremos más en detalle en la clase de Listas.
+
+---
+
+## El código completo con estilos
+
+```dart
+body: Center(
+  child: Column(
+    children: [
+      StatelessWidgetejemplo(),
+      StatefulWidgetejemplo(),
+
+      Text(
+        "APLICACIONES MOVILES",
+        style: TextStyle(fontSize: 30, color: Colors.red),
+      ),
+
+      SizedBox(
+        width: 300,
+        child: TextField(
+          decoration: InputDecoration(
+            labelText: 'escriba su correo',
+            hintText: 'usuario@gmail.com',
+            border: OutlineInputBorder(),
+          ),
+        ),
+      ),
+
+      ElevatedButton(
+        style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+        onPressed: () {},
+        child: Text(
+          "iniciar sesión",
+          style: TextStyle(fontSize: 10, color: Colors.black87),
+        ),
+      ),
+
+      ListTile(title: Text("- ADMINISTRADOR")),
+      ListTile(title: Text("- CONTADOR")),
+      ListTile(title: Text("- SECRETARIO")),
+    ],
+  ),
 ),
 ```
 
-> 📌 `onPressed` es la función que se ejecuta cuando el usuario presiona el botón. Si está vacío `() {}`, no hace nada todavía.
-
-### Con color personalizado — también en nuestro código
-
-```dart
-ElevatedButton(
-  onPressed: () {},
-  style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-  child: Text('Enviar'),
-),
-```
-
 ---
 
-## 4. Widget ListTile
-
-El widget `ListTile` muestra un elemento de lista con texto.
-
-### Ejemplo básico — también en nuestro código
-
-```dart
-ListTile(title: Text('Elemento 1')),
-ListTile(title: Text('Elemento 2')),
-ListTile(title: Text('Elemento 3')),
-```
-
-> Lo veremos más en detalle en la clase de Listas.
----
 ## Resumen
 
 | Widget | Para qué sirve |
@@ -189,10 +238,10 @@ ListTile(title: Text('Elemento 3')),
 | `Text` | Mostrar texto en pantalla |
 | `TextStyle` | Dar estilo al texto (color, tamaño) |
 | `TextField` | Capturar texto del usuario |
-| `TextEditingController` | Leer lo que el usuario escribió |
+| `SizedBox` | Controlar el ancho o alto de un widget |
 | `ElevatedButton` | Botón principal con acción |
 | `ListTile` | Elemento estándar de lista |
 
 ---
 
-> 💡 **Tip:** Usa `SizedBox(height: 16)` entre widgets para darles espacio vertical sin configuraciones complejas.
+> 💡 **Tip:** Comenta el body anterior antes de crear uno nuevo. Así puedes volver atrás si algo sale mal.
