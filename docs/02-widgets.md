@@ -11,9 +11,7 @@ Un widget es un componente visual. Puede ser un texto, un botón, un campo de te
 
 ---
 
-## Lo que veremos en esta clase
-
-En el archivo `main.dart` ya tenemos ejemplos de los tres widgets más usados. Están comentados para que los podamos activar de a poco:
+## Lo que veremos
 
 ```dart
 body: Center(
@@ -183,49 +181,7 @@ ListTile(title: Text('Elemento 3')),
 ```
 
 > Lo veremos más en detalle en la clase de Listas.
-
 ---
-
-## Cómo se ven juntos en pantalla
-
-En nuestro `main.dart` los widgets están dentro de un `Column` que los apila verticalmente:
-
-```dart
-body: Center(
-  child: Column(
-    children: [
-      Text('HOLA MUNDO'),
-      Text(
-        'Hola Mundo',
-        style: TextStyle(fontSize: 24, color: Colors.blue),
-      ),
-      TextField(),
-      TextField(
-        decoration: InputDecoration(
-          labelText: 'Escribe tu nombre',
-          hintText: 'ESCRIBE ACÁ',
-          border: OutlineInputBorder(),
-        ),
-      ),
-      ElevatedButton(
-        onPressed: () {},
-        child: Text('Enviar'),
-      ),
-      ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-        child: Text('Enviar'),
-      ),
-      ListTile(title: Text('Elemento 1')),
-      ListTile(title: Text('Elemento 2')),
-      ListTile(title: Text('Elemento 3')),
-    ],
-  ),
-),
-```
-
----
-
 ## Resumen
 
 | Widget | Para qué sirve |
