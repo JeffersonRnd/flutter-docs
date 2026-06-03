@@ -89,6 +89,20 @@ TextField(
   ),
 ),
 ```
+### PARA REDUCIR LOS BORDES
+
+```dart
+SizedBox(
+  width: 300,
+  child: TextField(
+    decoration: InputDecoration(
+      labelText: 'Escribe tu nombre',
+      hintText: 'ESCRIBE ACÁ',
+      border: OutlineInputBorder(),
+    ),
+  ),
+),
+```
 
 ### Capturar lo que escribe el usuario — TextEditingController
 
