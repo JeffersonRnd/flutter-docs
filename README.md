@@ -19,10 +19,10 @@ Documentación de **Flutter** con ejemplos prácticos, ejercicios y guías paso 
 ## 💻 Ejercicios
 
 | Proyecto | Descripción |
-|----------|-------------|
-| [`buscador_de_universidades`](ejercicios/buscador_de_universidades/) | Consumo de API y búsqueda de universidades |
-| [`lista_de_tareas`](ejercicios/lista_de_tareas/) | CRUD básico con manejo de estado |
-| [`pokemones`](ejercicios/pokemones/) | Consumo de API REST y visualización de datos |
+|---|---|
+| [greetly](ejercicios/greetly.md) | Widgets básicos (Text, Input, Button) — saludo personalizado |
+| [tap_like](ejercicios/tap_like.md) | StatefulWidget y `setState()` — contador y botón de like |
+| [quick_signup](ejercicios/quick_signup.md) | Formulario básico — validaciones y ListView |
 
 ---
 
