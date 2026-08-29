@@ -35,3 +35,13 @@ Este repositorio reúne apuntes, ejemplos y ejercicios prácticos para facilitar
 > 📌 Desarrollado con **Flutter 3.44.0** y probado en **Google Chrome**.
 
 > 📖 El repositorio seguirá creciendo con nuevos temas, ejercicios y proyectos prácticos.
+
+---
+
+## 🤝 Contribuir
+
+¿Quieres agregar un nuevo ejercicio o tema? Genial, este repo está abierto a
+colaboraciones. Antes de enviar tu Pull Request, revisa la guía en
+[CONTRIBUTING.md](CONTRIBUTING.md): ahí está la estructura de carpetas, la
+plantilla que deben seguir los archivos nuevos y el recordatorio de actualizar
+esta tabla del README.
